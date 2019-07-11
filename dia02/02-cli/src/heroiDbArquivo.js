@@ -79,23 +79,34 @@ class HeroiDbArquivo {
             return dadosFiltrados;                               
             
          }
+    
+    async remover(idHeroi){
+        const dados = await this._obterArquivo()
+        const dadosFiltrados = dados.filter(( { id } ) => id !== parseInt(idHeroi))
+
+        return await this._escreverArquivo(dadosFiltrados)
+    }
+
         
     }
 
-//testamos a classe
-//LEMBRAR DE COMENTAR DEPOIS
+// //testamos a classe
+// //LEMBRAR DE COMENTAR DEPOIS
 
-async function main() {  
+// async function main() {  
     
-    const minhaClasse = new HeroiDbArquivo();
-    // await minhaClasse.cadastrar({
-    //     nome: 'Flash',
-    //     poder: 'Velocidade'
-    // });
-    const dado = await minhaClasse.listar({
-        nome: 'Fl'
-    });
-    console.log('dado', dado)
-}
+//     const minhaClasse = new HeroiDbArquivo();
+//     // await minhaClasse.cadastrar({
+//     //     nome: 'Flash',
+//     //     poder: 'Velocidade'
+//     // });
+//     const dado = await minhaClasse.listar({
+//         nome: 'Fl'
+//     });
+//     // console.log('dado', dado)
+//     return dado;
+// }
 
-main();
+// main();
+
+module.exports = HeroiDbArquivo;
