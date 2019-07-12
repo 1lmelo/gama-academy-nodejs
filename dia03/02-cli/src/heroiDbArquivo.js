@@ -87,6 +87,43 @@ class HeroiDbArquivo {
         return await this._escreverArquivo(dadosFiltrados)
     }
 
+    async atualizar(idHeroi, heroiAtualizado){
+        const dados = await this._obterArquivo()
+        //procuramos a posicao que o heroi esta
+
+        const indiceHeroiAntigo = dados.findIndex(({ id }) => id === parseInt(idHeroi))
+        
+        if(indiceHeroiAntigo === -1){
+            throw new Error('O heroi nao existe')
+        }
+        const atual = dado[indiceHeroiAntigo]
+        //removemos o item da lista
+        //o segundo parametro é falar quantos remocer
+        dados.splice(indiceHeroiAntigo, 1)
+
+        
+        
+        
+        //para remover todas as chaves que estejam vazias (undefined) precisamos converter o obj pra string
+        // e depois para obj novamente
+
+        const objTexto = JSON.stringify(heroiAtualizado)
+        const objFinal = JSON.parse(objTexto)
+
+
+        const heroiAlterado = {
+            ...atual,
+            ...objFinal
+        }
+
+        const novaLista = [
+            ...dados,
+            heroiAlterado
+        ]
+        return await this._escreverArquivo(novaLista)
+
+    }
+
         
     }
 

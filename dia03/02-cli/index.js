@@ -1,72 +1,73 @@
-//Para instalar pacotes externos usamos a ferramenta NPM ou YARN
+const Heroi = require("./src/heroiEntidade");
 
-//Para iniciar um projeto NODEJS, precisamos de um arquivo que define os pacotes
-//Quando outrs pessoa precisa acessar seu codigo, esse arquivo lhe ensina como instalar ou quais 
-//versões são suportadas
+const HeroiDbArquivo = require('./src/heroiDbArquivo');
 
-
-//para iniciar um projeto
-//npm init
-// -> -y => não precisa de yizard 
-
-
-//para trabalhar com programas de linha de comando usaremos o Commander 
-//npm install commander 
-//--save (É O KCT)
-//--save-dev -> Ferramentas como transpiladores, testes, ferramentas para diminuir o tamanho do arquivo
-
-const Heroi = require('./src/heroiEntidade')
-
-const Commander = require('commander')
+const Commander = require("commander");
 const commander = Commander
-    .version('v1.0')
-    //definimos opções para utilizar de acordo com a versão
-    .option('-c, --cadastrar ', 'Deve cadastrar um heroi')
-    .option('-a, --atualizar [value]', 'Deve atualizar um heroi')
-    .option('-r, --remover ', 'Deve remover um heroi')
-    .option('-l, --listar ', 'Deve listar um heroi')
+  .version('v1.0')
+  .option('-c, --cadastrar', 'Deve cadastrar um Heroi')
+  .option('-i, --idade [value]', 'Idade do Heroi')
+  .option('-I, --id [value]', 'ID do Heroi')
+  .option('-p, --poder [value]', 'Poder do Heroi')
+  .option('-n, --nome [value]', 'Nome do Heroi')
+  .option('-a, --atualizar [value]', 'Atualiza o Heroi')
+  .option('-r, --remover', 'Remove os Herois')
+  .option('-l, --listar', 'Lista os Herois')
+  .parse(process.argv);
 
+async function main() {
+  const heroi = new Heroi(commander);
 
-    .option('-n, --nome [value]', 'O nome do Heroi')
-    .option('-i, --idade [value]', 'A idade do Heroi')
-    .option('-I, --id [value]', 'O id do Heroi')
-    .option('-p, --poder [value]', 'O poder do Heroi')
-    .parse(process.argv);
+  const heroiDbArquivo = new HeroiDbArquivo();
 
-function main (){
-    const heroi = new Heroi(commander)
+  // node index.js --nome Flash --poder Velocidade --idade 30 --cadastrar
+  if (commander.cadastrar) {
+     await heroiDbArquivo.cadastrar(heroi);
+     console.log("Heroi cadastrado com sucesso!");
+     return;
+  }
 
-    // node index.js --cadastrar
-    // node index.js -c
-    /**
-     * node index.js
-     *  --nome Flash \
-     *  --poder Velocidade \
-     *  --idade 80 \
-     *  --cadastrar
-     */
+  // node index.js --nome Fl --listar
+  if (commander.listar) {
+     let filtro = {};
 
+     if(heroi.nome){
+        filtro = { nome: heroi.nome }
+     }
 
-    if(commander.cadastrar){
-        console.log('chamou cadastrar!', heroi);
-        return;
-    }
+     const herois = await heroiDbArquivo.listar(filtro);
+     console.log("Herois encontrados:\n", JSON.stringify(herois));
+     return;
+  }
 
-    if(commander.listar){
-        console.log('chamou listar!', heroi);
-        return;
-    }
+  // node index.js --id 123456 --remover
+  if (commander.remover) {
+     const id = heroi.id;
+     if(!id) {
+        throw new Error("Voce deve informar um ID");
+     }
+     await heroiDbArquivo.remover(id)
+     console.log("Heroi removido com sucesso!");
+     return;
+  }
 
-    if(commander.remover){
-        console.log('chamou remover!', heroi);
-        return;
-    }
+  /**
+   * node index.js
+   * --nome Flash
+   * --poder Forca
+   * --id 
+   * --atualizar
+   * 
+   */
 
-    if(commander.atualizar){
-        console.log('chamou atualizar!', heroi);
-        return;
-    }
+  if (commander.atualizar) {
+    const { id } = heroi
+    //para nao atualizar o id, vamos remover
+    delete heroi.id
+    await HeroiDbArquivo.atualizar(id, heroi)
+    console.log('Heroi atualizado com sucesso!')
+    return;
+  }
 }
-
 
 main();

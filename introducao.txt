@@ -1,0 +1,21 @@
+https://meet.google.com/pwp-wbns-aqi
+
+https://erickwendel.com
+linkedin.com/in/erickwendel
+
+https://meetup.com/nerdzao
+https://meetup.com/nodebr
+https://meetup.com/nodeschoolsp
+https://meetup.com/java-sp
+
+
+
+interface
+rodomongo, studio 3t -> interface para mongo 
+
+c;/ arquivos de programa/ mongodb/server/4.0/bin
+c:/
+c:/data/db
+
+1 terminal -> mongod
+2 terminal mongo
